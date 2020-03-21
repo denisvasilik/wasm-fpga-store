@@ -43,6 +43,7 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
       StoreBlk_DatOut : out std_logic_vector(31 downto 0);
       StoreBlk_Ack : out std_logic;
       StoreBlk_Unoccupied_Ack : out std_logic;
+      Operation : out std_logic;
       Run : out std_logic;
       Busy : in std_logic;
       ModuleInstanceUID : out std_logic_vector(31 downto 0);
@@ -59,18 +60,29 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
   signal StoreBlk_Unoccupied_Ack : std_logic;
 
   signal Run : std_logic;
+  signal Operation : std_logic;
   signal Busy : std_logic;
   signal ModuleInstanceUID : std_logic_vector(31 downto 0);
   signal SectionUID : std_logic_vector(31 downto 0);
   signal Idx : std_logic_vector(31 downto 0);
   signal Address : std_logic_vector(31 downto 0);
+
+  signal StoreReadAddress : std_logic_vector(31 downto 0);
+  signal StoreWriteAddress : std_logic_vector(31 downto 0);
  
   signal StoreState : std_logic_vector(7 downto 0);
 
   constant StoreStateIdle0 : std_logic_vector(7 downto 0) := x"00";
-  constant StoreStateAddress0 : std_logic_vector(7 downto 0) := x"00";
+  constant StoreStateRead0 : std_logic_vector(7 downto 0) := x"01";
+  constant StoreStateRead1 : std_logic_vector(7 downto 0) := x"02";
+  constant StoreStateWrite0 : std_logic_vector(7 downto 0) := x"03";
+  constant StoreStateWrite1 : std_logic_vector(7 downto 0) := x"04";
+  constant StoreStateWrite2 : std_logic_vector(7 downto 0) := x"05";
+  constant StoreStateWrite3 : std_logic_vector(7 downto 0) := x"06";
+  constant StoreStateWrite4 : std_logic_vector(7 downto 0) := x"07";
+  constant StoreStateWrite5 : std_logic_vector(7 downto 0) := x"08";
 
- begin
+begin
 
   Rst <= not nRst;
 
@@ -80,15 +92,100 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
   process (Clk, Rst) is
   begin
     if(Rst = '1') then
-      StoreState <= (others => '0');
+      Memory_Cyc <= (others => '0');
+      Memory_Stb <= '0';
+      Memory_Adr <= (others => '0');
+      Memory_Sel <= (others => '1');
+      Memory_We <= '0';
+      Memory_DatOut <= (others => '0');
+      StoreReadAddress <= (others => '0');
+      StoreWriteAddress <= (others => '0');
+      StoreState <= StoreStateIdle0;
     elsif rising_edge(Clk) then
       if(StoreState = StoreStateIdle0) then
-
+        Busy <= '0';
+        Memory_Cyc <= (others => '0');
+        Memory_Stb <= '0';
+        Memory_Adr <= (others => '0');
+        Memory_We <= '0';
+        if (Run = '1' and Operation = '1') then
+          Busy <= '1';
+          StoreState <= StoreStateWrite0;
+        elsif(Run = '1' and Operation = '0') then
+          Busy <= '1';
+          StoreState <= StoreStateRead0;
+        end if;
       --
-      -- Get address
+      -- Write ModuleInstanceUID
       --
-      elsif(StoreState = StoreStateAddress0) then
-
+      elsif(StoreState = StoreStateWrite0) then
+        Memory_Cyc <= "1";
+        Memory_Stb <= '1';
+        Memory_We <= '1';
+        Memory_DatOut <= ModuleInstanceUID;
+        Memory_Adr <= "00" & StoreWriteAddress(23 downto 2);
+        StoreState <= StoreStateWrite1;
+      elsif(StoreState = StoreStateWrite1) then
+        if ( Memory_Ack = '1' ) then
+          Memory_Cyc <= (others => '0');
+          Memory_Stb <= '0';
+          Memory_We <= '0';
+          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          StoreState <= StoreStateWrite2;
+        end if;
+      --
+      -- Write SectionUID
+      --
+      elsif(StoreState = StoreStateWrite2) then
+        Memory_Cyc <= "1";
+        Memory_Stb <= '1';
+        Memory_We <= '1';
+        Memory_DatOut <= SectionUID;
+        Memory_Adr <= "00" & StoreWriteAddress(23 downto 2);
+        StoreState <= StoreStateWrite3;
+      elsif(StoreState = StoreStateWrite3) then
+        if ( Memory_Ack = '1' ) then
+          Memory_Cyc <= (others => '0');
+          Memory_Stb <= '0';
+          Memory_We <= '0';
+          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          StoreState <= StoreStateWrite4;
+        end if;
+      --
+      -- Write Idx
+      --
+      elsif(StoreState = StoreStateWrite4) then
+        Memory_Cyc <= "1";
+        Memory_Stb <= '1';
+        Memory_We <= '1';
+        Memory_DatOut <= Idx;
+        Memory_Adr <= "00" & StoreWriteAddress(23 downto 2);
+        StoreState <= StoreStateWrite5;
+      elsif(StoreState = StoreStateWrite5) then
+        if ( Memory_Ack = '1' ) then
+          Memory_Cyc <= (others => '0');
+          Memory_Stb <= '0';
+          Memory_We <= '0';
+          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          StoreState <= StoreStateIdle0;
+        end if;
+      --
+      -- Read Address
+      --
+      elsif(StoreState = StoreStateRead0) then
+        Memory_Cyc <= "1";
+        Memory_Stb <= '1';
+        Memory_We <= '0';
+        Memory_Adr <= "00" & StoreReadAddress(23 downto 2);
+        StoreState <= StoreStateRead1;
+      elsif(StoreState = StoreStateRead1) then
+        if ( Memory_Ack = '1' ) then
+          Memory_Cyc <= (others => '0');
+          Memory_Stb <= '0';
+          Memory_We <= '0';
+          Address <= Memory_DatIn;
+          StoreState <= StoreStateIdle0;
+        end if;
       end if;
     end if;
   end process;
@@ -106,6 +203,7 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
       StoreBlk_DatOut => StoreBlk_DatOut,
       StoreBlk_Ack => StoreBlk_Ack,
       StoreBlk_Unoccupied_Ack => StoreBlk_Unoccupied_Ack,
+      Operation => Operation,
       Run => Run,
       Busy => Busy,
       ModuleInstanceUID => ModuleInstanceUID,

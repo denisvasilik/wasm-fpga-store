@@ -96,6 +96,7 @@ set files [list \
  "[file normalize "${project_tb}/tb_pkg.vhd"]"\
  "[file normalize "${project_tb}/tb_std_logic_1164_additions.vhd"]"\
  "[file normalize "${project_tb}/tb_Types.vhd"]"\
+ "[file normalize "${project_tb}/tb_WbRam.vhd"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -103,6 +104,16 @@ foreach i $files {
     set file_obj [get_files -of_objects [get_filesets sim_1] [list $i]]
     set_property "file_type" "VHDL" $file_obj
 }
+
+#------------------------------------------------------------------------
+# Block design and other IP inclusion
+printMessage "Adding IP cores..."
+
+set files [list \
+ "[file normalize "${project_ip}/WasmFpgaTestBenchRam/WasmFpgaTestBenchRam.xci"]"\
+]
+
+add_files -fileset sim_1 $files
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
