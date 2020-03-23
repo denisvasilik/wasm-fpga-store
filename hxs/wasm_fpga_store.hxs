@@ -213,7 +213,7 @@ HwSwIf WasmFpgaStore {
                 HwAckImmediate = 'Yes';
             }
             Bits {
-                BitFieldData Address ( 31 downto 0 ) 'R_RTrans' {
+                BitFieldData Address ( 31 downto 0 ) 'RorW_WReg_RTrans' {
                     BitFieldDescription { ""; }
                     ResetValueEntry = 0b0;
                     BlockResetsAffecting {
