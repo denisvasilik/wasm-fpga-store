@@ -48,8 +48,9 @@ architecture WbRamArchitecture of WbRam is
   constant WbStateRead0 : natural := 1;
   constant WbStateRead1 : natural := 2;
   constant WbStateRead2 : natural := 3;
-  constant WbStateWrite0 : natural := 4;
-  constant WbStateWrite1 : natural := 5;
+  constant WbStateRead3 : natural := 4;
+  constant WbStateWrite0 : natural := 5;
+  constant WbStateWrite1 : natural := 6;
 
 begin
 
@@ -86,12 +87,16 @@ begin
       elsif(WbState = WbStateRead2) then
         DatOut <= ReadData;
         Ack <= '1';
+        WbState <= to_unsigned(WbStateRead3, WbState'LENGTH);
+      elsif(WbState = WbStateRead3) then
+        Ack <= '0';
         WbState <= to_unsigned(WbStateIdle0, WbState'LENGTH);
       elsif(WbState = WbStateWrite0) then
         WriteEnable <= "0";
         Ack <= '1';
         WbState <= to_unsigned(WbStateWrite1, WbState'LENGTH);
       elsif(WbState = WbStateWrite1) then
+        Ack <= '0';
         WbState <= to_unsigned(WbStateIdle0, WbState'LENGTH);
       end if;
     end if;
