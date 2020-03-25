@@ -60,6 +60,8 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
   signal StoreBlk_Ack : std_logic;
   signal StoreBlk_Unoccupied_Ack : std_logic;
 
+  signal PreviousRun : std_logic;
+  signal RunTrigger : std_logic;
   signal Run : std_logic;
   signal Operation : std_logic;
   signal Busy : std_logic;
@@ -89,15 +91,17 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
   constant StoreStateRead3 : std_logic_vector(7 downto 0) := x"04";
   constant StoreStateRead4 : std_logic_vector(7 downto 0) := x"05";
   constant StoreStateRead5 : std_logic_vector(7 downto 0) := x"06";
-  constant StoreStateWrite0 : std_logic_vector(7 downto 0) := x"07";
-  constant StoreStateWrite1 : std_logic_vector(7 downto 0) := x"08";
-  constant StoreStateWrite2 : std_logic_vector(7 downto 0) := x"09";
-  constant StoreStateWrite3 : std_logic_vector(7 downto 0) := x"0A";
-  constant StoreStateWrite4 : std_logic_vector(7 downto 0) := x"0B";
-  constant StoreStateWrite5 : std_logic_vector(7 downto 0) := x"0C";
-  constant StoreStateWrite6 : std_logic_vector(7 downto 0) := x"0D";
-  constant StoreStateWrite7 : std_logic_vector(7 downto 0) := x"0E";
-  constant StoreStateCompare0 : std_logic_vector(7 downto 0) := x"0F";
+  constant StoreStateRead6 : std_logic_vector(7 downto 0) := x"07";
+  constant StoreStateRead7 : std_logic_vector(7 downto 0) := x"08";
+  constant StoreStateWrite0 : std_logic_vector(7 downto 0) := x"09";
+  constant StoreStateWrite1 : std_logic_vector(7 downto 0) := x"0A";
+  constant StoreStateWrite2 : std_logic_vector(7 downto 0) := x"0B";
+  constant StoreStateWrite3 : std_logic_vector(7 downto 0) := x"0C";
+  constant StoreStateWrite4 : std_logic_vector(7 downto 0) := x"0D";
+  constant StoreStateWrite5 : std_logic_vector(7 downto 0) := x"0E";
+  constant StoreStateWrite6 : std_logic_vector(7 downto 0) := x"0F";
+  constant StoreStateWrite7 : std_logic_vector(7 downto 0) := x"10";
+  constant StoreStateCompare0 : std_logic_vector(7 downto 0) := x"11";
 
 begin
 
@@ -105,6 +109,20 @@ begin
 
   Ack <= StoreBlk_Ack;
   DatOut <= StoreBlk_DatOut;
+
+  RunTriggerGenerator: process (Clk, Rst) is
+  begin
+    if(Rst = '1') then
+      PreviousRun <= '0';
+      RunTrigger <= '0';
+    elsif rising_edge(Clk) then
+      RunTrigger <= '0';
+      PreviousRun <= Run;
+      if(Run = '1' and Run /= PreviousRun) then
+        RunTrigger <= '1';
+      end if;
+    end if;
+  end process;
 
   process (Clk, Rst) is
   begin
@@ -131,11 +149,11 @@ begin
         Memory_Stb <= '0';
         Memory_Adr <= (others => '0');
         Memory_We <= '0';
-        if (Run = '1' and Operation = WASMFPGASTORE_VAL_Write) then
+        if (RunTrigger = '1' and Operation = WASMFPGASTORE_VAL_Write) then
           Busy <= '1';
           Address_ToBeRead <= (others => '0');
           StoreState <= StoreStateWrite0;
-        elsif(Run = '1' and Operation = WASMFPGASTORE_VAL_Read) then
+        elsif(RunTrigger = '1' and Operation = WASMFPGASTORE_VAL_Read) then
           Busy <= '1';
           StoreReadAddress <= (others => '0');
           Address_ToBeRead <= (others => '0');
@@ -270,23 +288,24 @@ begin
           Memory_We <= '0';
           Idx_Internal <= Memory_DatIn;
           StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + x"04");
-          StoreState <= StoreStateIdle0;
+          StoreState <= StoreStateRead6;
         end if;
       --
       -- Read Address
       --
-      elsif(StoreState = StoreStateRead4) then
+      elsif(StoreState = StoreStateRead6) then
         Memory_Cyc <= "1";
         Memory_Stb <= '1';
         Memory_We <= '0';
         Memory_Adr <= "00" & StoreReadAddress(23 downto 2);
-        StoreState <= StoreStateRead5;
-      elsif(StoreState = StoreStateRead5) then
+        StoreState <= StoreStateRead7;
+      elsif(StoreState = StoreStateRead7) then
         if ( Memory_Ack = '1' ) then
           Memory_Cyc <= (others => '0');
           Memory_Stb <= '0';
           Memory_We <= '0';
           Address_Internal <= Memory_DatIn;
+          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + x"04");
           StoreState <= StoreStateCompare0;
         end if;
       --
