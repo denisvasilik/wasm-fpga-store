@@ -95,7 +95,18 @@ HwSwIf WasmFpgaStore {
                 HwAckImmediate = 'Yes';
             }
             Bits {
-                BitFieldReserved ( 31 downto 1 );
+                BitFieldReserved ( 31 downto 2 );
+                BitFieldEnum Operation ( 1 ) 'RW_WReg_RLoopBack' {
+                    BitFieldDescription { ""; }
+                    ValueEntries {
+                        Value { 0b0 = Read ValueDescription { "Use ModuleInstanceUID, SectionUID and Idx to read address from store"; } }
+                        Value { 0b1 = Write ValueDescription { "Write ModuleInstanceUID, SectionUID and Idx to store"; } }
+                    }
+                    ResetValueEntry = 0b0;
+                    BlockResetsAffecting {
+                        Pwr = 'X' ;
+                    }
+                }
                 BitFieldEnum Run ( 0 ) 'RW_WReg_RLoopBack' {
                     BitFieldDescription { ""; }
                     ValueEntries {
@@ -202,7 +213,7 @@ HwSwIf WasmFpgaStore {
                 HwAckImmediate = 'Yes';
             }
             Bits {
-                BitFieldData Address ( 31 downto 0 ) 'R_RTrans' {
+                BitFieldData Address ( 31 downto 0 ) 'RorW_WReg_RTrans' {
                     BitFieldDescription { ""; }
                     ResetValueEntry = 0b0;
                     BlockResetsAffecting {
