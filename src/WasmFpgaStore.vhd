@@ -6,6 +6,10 @@ library work;
   use work.WasmFpgaStoreWshBn_Package.all;
 
 entity WasmFpgaStore is
+  generic (
+    PinMaxAddress : boolean := false;
+    MaxAddress : std_logic_vector(31 downto 0) := x"00000000"
+  );
   port (
     Clk : in std_logic;
     nRst : in std_logic;
@@ -56,6 +60,8 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
 
   signal Rst : std_logic;
 
+  signal MaskedAdr : std_logic_vector(23 downto 0);
+
   signal StoreBlk_DatOut : std_logic_vector(31 downto 0);
   signal StoreBlk_Ack : std_logic;
   signal StoreBlk_Unoccupied_Ack : std_logic;
@@ -77,8 +83,7 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
   signal Idx_Internal : std_logic_vector(31 downto 0);
   signal Address_Internal : std_logic_vector(31 downto 0);
 
-  signal MaxAddress : std_logic_vector(31 downto 0);
-
+  signal StoreMaxAddress : std_logic_vector(31 downto 0);
   signal StoreReadAddress : std_logic_vector(31 downto 0);
   signal StoreWriteAddress : std_logic_vector(31 downto 0);
  
@@ -103,12 +108,16 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
   constant StoreStateWrite7 : std_logic_vector(7 downto 0) := x"10";
   constant StoreStateCompare0 : std_logic_vector(7 downto 0) := x"11";
 
+  constant WASMFPGASTORE_ADR_BLK_MASK_StoreBlk : std_logic_vector(23 downto 0) := x"00001F";
+
 begin
 
   Rst <= not nRst;
 
   Ack <= StoreBlk_Ack;
   DatOut <= StoreBlk_DatOut;
+
+  MaskedAdr <= Adr and WASMFPGASTORE_ADR_BLK_MASK_StoreBlk;
 
   RunTriggerGenerator: process (Clk, Rst) is
   begin
@@ -138,9 +147,9 @@ begin
       Memory_Sel <= (others => '1');
       Memory_We <= '0';
       Memory_DatOut <= (others => '0');
+      StoreMaxAddress <= MaxAddress;
       StoreReadAddress <= (others => '0');
       StoreWriteAddress <= (others => '0');
-      MaxAddress <= (others => '0');
       StoreState <= StoreStateIdle0;
     elsif rising_edge(Clk) then
       if(StoreState = StoreStateIdle0) then
@@ -229,14 +238,16 @@ begin
           Memory_Stb <= '0';
           Memory_We <= '0';
           StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
-          MaxAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          if (PinMaxAddress = false) then
+            StoreMaxAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          end if;
           StoreState <= StoreStateIdle0;
         end if;
       --
       -- Read ModuleInstanceUID
       --
       elsif(StoreState = StoreStateRead0) then
-        if(StoreReadAddress = MaxAddress) then
+        if(StoreReadAddress = StoreMaxAddress) then
           StoreState <= StoreStateIdle0;
         else
           Memory_Cyc <= "1";
@@ -328,7 +339,7 @@ begin
     port map (
       Clk => Clk,
       Rst => Rst,
-      Adr => Adr,
+      Adr => MaskedAdr,
       Sel => Sel,
       DatIn => DatIn,
       We => We,
