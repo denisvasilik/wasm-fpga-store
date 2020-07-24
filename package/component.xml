@@ -218,7 +218,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f92e9879</spirit:value>
+            <spirit:value>5b1e4c75</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -247,7 +247,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f22400cd</spirit:value>
+            <spirit:value>6a35fa7f</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -268,7 +268,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c99bde82</spirit:value>
+            <spirit:value>8dc7685c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -289,7 +289,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c99bde82</spirit:value>
+            <spirit:value>8dc7685c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -570,6 +570,18 @@
         </spirit:wire>
       </spirit:port>
     </spirit:ports>
+    <spirit:modelParameters>
+      <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="boolean">
+        <spirit:name>PinMaxAddress</spirit:name>
+        <spirit:displayName>Pinmaxaddress</spirit:displayName>
+        <spirit:value spirit:format="bool" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.PinMaxAddress">false</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="std_logic_vector(31 downto 0)">
+        <spirit:name>MaxAddress</spirit:name>
+        <spirit:displayName>Maxaddress</spirit:displayName>
+        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.MaxAddress" spirit:bitStringLength="32">0x00000000</spirit:value>
+      </spirit:modelParameter>
+    </spirit:modelParameters>
   </spirit:model>
   <spirit:fileSets>
     <spirit:fileSet>
@@ -577,7 +589,7 @@
       <spirit:file>
         <spirit:name>xgui/wasm_fpga_store_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f92e9879</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_5b1e4c75</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -621,6 +633,12 @@
         <spirit:userFileType>USED_IN_synthesis</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>../tb/tb_WbRam.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_simulation</spirit:userFileType>
+        <spirit:userFileType>USED_IN_synthesis</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>../tb/tb_WasmFpgaStore.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_simulation</spirit:userFileType>
@@ -640,14 +658,14 @@
       <spirit:file>
         <spirit:name>../src/WasmFpgaStore.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_bfc1074f</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_2a55ce0b</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_xilinx_com_ip_clk_wiz_6_0__ref_view_fileset</spirit:name>
       <spirit:vendorExtensions>
         <xilinx:subCoreRef>
-          <xilinx:componentRef xsi:type="xilinx:componentRefType" xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="clk_wiz" xilinx:version="6.0">
+          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="clk_wiz" xilinx:version="6.0">
             <xilinx:mode xilinx:name="create_mode"/>
           </xilinx:componentRef>
         </xilinx:subCoreRef>
@@ -705,6 +723,16 @@
       <spirit:name>Component_Name</spirit:name>
       <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">wasm_fpga_store</spirit:value>
     </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>PinMaxAddress</spirit:name>
+      <spirit:displayName>Pin Max. Address</spirit:displayName>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.PinMaxAddress">false</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>MaxAddress</spirit:name>
+      <spirit:displayName>Max. Address</spirit:displayName>
+      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.MaxAddress" spirit:bitStringLength="32">0x00000000</spirit:value>
+    </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
     <xilinx:coreExtensions>
@@ -716,17 +744,45 @@
         <xilinx:taxonomy>AXI_Peripheral</xilinx:taxonomy>
       </xilinx:taxonomies>
       <xilinx:displayName>WebAssembly Store IP</xilinx:displayName>
-      <xilinx:coreRevision>20</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2020-02-26T17:17:05Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>22</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2020-07-22T21:32:22Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@625df572_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@412be82f_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f1cf74e_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@567ac4d2_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@40b6b8f3_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5bef66e0_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@512bf852_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a40d3e5_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3bef47a7_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@32e68148_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@146f2395_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@28ffce22_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@48005068_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e9d3db6_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@483c69d0_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35c4122f_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3145c2c5_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35c72acf_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@f6584b7_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@24e5f427_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@61147433_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@29178909_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1caa66d4_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a32534d_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4aeaf7b4_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@647c6014_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e163e51_ARCHIVE_LOCATION">/home/ubuntu-dev/git/webassembly/wasm-fpga-store/package</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2019.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="07fa320e"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="9e28167b"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="94fd2b0d"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="89681c72"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="562b1208"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="8afbc60b"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="a180526c"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="078ad0a8"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
