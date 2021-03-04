@@ -86,7 +86,7 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
   signal StoreMaxAddress : std_logic_vector(31 downto 0);
   signal StoreReadAddress : std_logic_vector(31 downto 0);
   signal StoreWriteAddress : std_logic_vector(31 downto 0);
- 
+
   signal StoreState : std_logic_vector(7 downto 0);
 
   constant StoreStateIdle0 : std_logic_vector(7 downto 0) := x"00";
@@ -150,6 +150,7 @@ begin
       StoreMaxAddress <= MaxAddress;
       StoreReadAddress <= (others => '0');
       StoreWriteAddress <= (others => '0');
+      Busy <= '0';
       StoreState <= StoreStateIdle0;
     elsif rising_edge(Clk) then
       if(StoreState = StoreStateIdle0) then
