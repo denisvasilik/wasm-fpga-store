@@ -30,33 +30,9 @@ entity WasmFpgaStore is
     Memory_Ack : in std_logic;
     Memory_Cyc : out std_logic_vector(0 downto 0)
   );
-end entity;
+end;
 
 architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
-
-  component StoreBlk_WasmFpgaStore is
-    port (
-      Clk : in std_logic;
-      Rst : in std_logic;
-      Adr : in std_logic_vector(23 downto 0);
-      Sel : in std_logic_vector(3 downto 0);
-      DatIn : in std_logic_vector(31 downto 0);
-      We : in std_logic;
-      Stb : in std_logic;
-      Cyc : in  std_logic_vector(0 downto 0);
-      StoreBlk_DatOut : out std_logic_vector(31 downto 0);
-      StoreBlk_Ack : out std_logic;
-      StoreBlk_Unoccupied_Ack : out std_logic;
-      Operation : out std_logic;
-      Run : out std_logic;
-      Busy : in std_logic;
-      ModuleInstanceUID : out std_logic_vector(31 downto 0);
-      SectionUID : out std_logic_vector(31 downto 0);
-      Idx : out std_logic_vector(31 downto 0);
-      Address_ToBeRead : in std_logic_vector(31 downto 0);
-      Address_Written : out std_logic_vector(31 downto 0)
-    );
-  end component;
 
   signal Rst : std_logic;
 
@@ -66,8 +42,8 @@ architecture WasmFpgaStoreArchitecture of WasmFpgaStore is
   signal StoreBlk_Ack : std_logic;
   signal StoreBlk_Unoccupied_Ack : std_logic;
 
-  signal PreviousRun : std_logic;
-  signal RunTrigger : std_logic;
+  signal WRegPulse_ControlReg : std_logic;
+
   signal Run : std_logic;
   signal Operation : std_logic;
   signal Busy : std_logic;
@@ -119,20 +95,6 @@ begin
 
   MaskedAdr <= Adr and WASMFPGASTORE_ADR_BLK_MASK_StoreBlk;
 
-  RunTriggerGenerator: process (Clk, Rst) is
-  begin
-    if(Rst = '1') then
-      PreviousRun <= '0';
-      RunTrigger <= '0';
-    elsif rising_edge(Clk) then
-      RunTrigger <= '0';
-      PreviousRun <= Run;
-      if(Run = '1' and Run /= PreviousRun) then
-        RunTrigger <= '1';
-      end if;
-    end if;
-  end process;
-
   process (Clk, Rst) is
   begin
     if(Rst = '1') then
@@ -159,11 +121,11 @@ begin
         Memory_Stb <= '0';
         Memory_Adr <= (others => '0');
         Memory_We <= '0';
-        if (RunTrigger = '1' and Operation = WASMFPGASTORE_VAL_Write) then
+        if (WRegPulse_ControlReg and Run and Operation = WASMFPGASTORE_VAL_Write) then
           Busy <= '1';
           Address_ToBeRead <= (others => '0');
           StoreState <= StoreStateWrite0;
-        elsif(RunTrigger = '1' and Operation = WASMFPGASTORE_VAL_Read) then
+        elsif(WRegPulse_ControlReg and Run and Operation = WASMFPGASTORE_VAL_Read) then
           Busy <= '1';
           StoreReadAddress <= (others => '0');
           Address_ToBeRead <= (others => '0');
@@ -336,7 +298,7 @@ begin
     end if;
   end process;
 
-  StoreBlk_WasmFpgaStore_i : StoreBlk_WasmFpgaStore
+  StoreBlk_WasmFpgaStore_i : entity work.StoreBlk_WasmFpgaStore
     port map (
       Clk => Clk,
       Rst => Rst,
@@ -351,6 +313,7 @@ begin
       StoreBlk_Unoccupied_Ack => StoreBlk_Unoccupied_Ack,
       Operation => Operation,
       Run => Run,
+      WRegPulse_ControlReg => WRegPulse_ControlReg,
       Busy => Busy,
       ModuleInstanceUID => ModuleInstanceUID,
       SectionUID => SectionUID,
