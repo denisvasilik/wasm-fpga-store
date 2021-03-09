@@ -121,11 +121,11 @@ begin
         Memory_Stb <= '0';
         Memory_Adr <= (others => '0');
         Memory_We <= '0';
-        if (WRegPulse_ControlReg and Run and Operation = WASMFPGASTORE_VAL_Write) then
+        if (WRegPulse_ControlReg = '1' and Run = '1' and Operation = WASMFPGASTORE_VAL_Write) then
           Busy <= '1';
           Address_ToBeRead <= (others => '0');
           StoreState <= StoreStateWrite0;
-        elsif(WRegPulse_ControlReg and Run and Operation = WASMFPGASTORE_VAL_Read) then
+        elsif(WRegPulse_ControlReg = '1' and Run = '1' and Operation = WASMFPGASTORE_VAL_Read) then
           Busy <= '1';
           StoreReadAddress <= (others => '0');
           Address_ToBeRead <= (others => '0');
