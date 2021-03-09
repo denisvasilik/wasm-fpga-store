@@ -34,8 +34,6 @@ hxs:
                registry.build.aug:5000/docker/hxs_generator:latest
 	cp hxs_gen/vhd_gen/header/wasm_fpga_store_header.vhd resources/wasm_fpga_store_header.vhd
 	cp hxs_gen/vhd_gen/wishbone/wasm_fpga_store_wishbone.vhd resources/wasm_fpga_store_wishbone.vhd
-	cp hxs_gen/vhd_gen/testbench/direct/wasm_fpga_store_direct.vhd resources/wasm_fpga_store_direct.vhd
-	cp hxs_gen/vhd_gen/testbench/indirect/wasm_fpga_store_indirect.vhd resources/wasm_fpga_store_indirect.vhd
 
 install-from-test-pypi:
 	pip3 install --upgrade -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple wasm-fpga-store
