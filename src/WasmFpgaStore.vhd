@@ -139,14 +139,14 @@ begin
         Memory_Stb <= '1';
         Memory_We <= '1';
         Memory_DatOut <= ModuleInstanceUID;
-        Memory_Adr <= "00" & StoreWriteAddress(23 downto 2);
+        Memory_Adr <= StoreWriteAddress(23 downto 0);
         StoreState <= StoreStateWrite1;
       elsif(StoreState = StoreStateWrite1) then
         if ( Memory_Ack = '1' ) then
           Memory_Cyc <= (others => '0');
           Memory_Stb <= '0';
           Memory_We <= '0';
-          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + 1);
           StoreState <= StoreStateWrite2;
         end if;
       --
@@ -157,14 +157,14 @@ begin
         Memory_Stb <= '1';
         Memory_We <= '1';
         Memory_DatOut <= SectionUID;
-        Memory_Adr <= "00" & StoreWriteAddress(23 downto 2);
+        Memory_Adr <= StoreWriteAddress(23 downto 0);
         StoreState <= StoreStateWrite3;
       elsif(StoreState = StoreStateWrite3) then
         if ( Memory_Ack = '1' ) then
           Memory_Cyc <= (others => '0');
           Memory_Stb <= '0';
           Memory_We <= '0';
-          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + 1);
           StoreState <= StoreStateWrite4;
         end if;
       --
@@ -175,14 +175,14 @@ begin
         Memory_Stb <= '1';
         Memory_We <= '1';
         Memory_DatOut <= Idx;
-        Memory_Adr <= "00" & StoreWriteAddress(23 downto 2);
+        Memory_Adr <= StoreWriteAddress(23 downto 0);
         StoreState <= StoreStateWrite5;
       elsif(StoreState = StoreStateWrite5) then
         if ( Memory_Ack = '1' ) then
           Memory_Cyc <= (others => '0');
           Memory_Stb <= '0';
           Memory_We <= '0';
-          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + 1);
           StoreState <= StoreStateWrite6;
         end if;
       --
@@ -193,16 +193,16 @@ begin
         Memory_Stb <= '1';
         Memory_We <= '1';
         Memory_DatOut <= Address_ToBeWritten;
-        Memory_Adr <= "00" & StoreWriteAddress(23 downto 2);
+        Memory_Adr <= StoreWriteAddress(23 downto 0);
         StoreState <= StoreStateWrite7;
       elsif(StoreState = StoreStateWrite7) then
         if ( Memory_Ack = '1' ) then
           Memory_Cyc <= (others => '0');
           Memory_Stb <= '0';
           Memory_We <= '0';
-          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+          StoreWriteAddress <= std_logic_vector(unsigned(StoreWriteAddress) + 1);
           if (PinMaxAddress = false) then
-            StoreMaxAddress <= std_logic_vector(unsigned(StoreWriteAddress) + x"04");
+            StoreMaxAddress <= std_logic_vector(unsigned(StoreWriteAddress) + 1);
           end if;
           StoreState <= StoreStateIdle0;
         end if;
@@ -216,7 +216,7 @@ begin
           Memory_Cyc <= "1";
           Memory_Stb <= '1';
           Memory_We <= '0';
-          Memory_Adr <= "00" & StoreReadAddress(23 downto 2);
+          Memory_Adr <= StoreReadAddress(23 downto 0);
           StoreState <= StoreStateRead1;
         end if;
       elsif(StoreState = StoreStateRead1) then
@@ -225,7 +225,7 @@ begin
           Memory_Stb <= '0';
           Memory_We <= '0';
           ModuleInstanceUID_Internal <= Memory_DatIn;
-          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + x"04");
+          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + 1);
           StoreState <= StoreStateRead2;
         end if;
       --
@@ -235,7 +235,7 @@ begin
         Memory_Cyc <= "1";
         Memory_Stb <= '1';
         Memory_We <= '0';
-        Memory_Adr <= "00" & StoreReadAddress(23 downto 2);
+        Memory_Adr <= StoreReadAddress(23 downto 0);
         StoreState <= StoreStateRead3;
       elsif(StoreState = StoreStateRead3) then
         if ( Memory_Ack = '1' ) then
@@ -243,7 +243,7 @@ begin
           Memory_Stb <= '0';
           Memory_We <= '0';
           SectionUID_Internal <= Memory_DatIn;
-          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + x"04");
+          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + 1);
           StoreState <= StoreStateRead4;
         end if;
       --
@@ -253,7 +253,7 @@ begin
         Memory_Cyc <= "1";
         Memory_Stb <= '1';
         Memory_We <= '0';
-        Memory_Adr <= "00" & StoreReadAddress(23 downto 2);
+        Memory_Adr <= StoreReadAddress(23 downto 0);
         StoreState <= StoreStateRead5;
       elsif(StoreState = StoreStateRead5) then
         if ( Memory_Ack = '1' ) then
@@ -261,7 +261,7 @@ begin
           Memory_Stb <= '0';
           Memory_We <= '0';
           Idx_Internal <= Memory_DatIn;
-          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + x"04");
+          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + 1);
           StoreState <= StoreStateRead6;
         end if;
       --
@@ -271,7 +271,7 @@ begin
         Memory_Cyc <= "1";
         Memory_Stb <= '1';
         Memory_We <= '0';
-        Memory_Adr <= "00" & StoreReadAddress(23 downto 2);
+        Memory_Adr <= StoreReadAddress(23 downto 0);
         StoreState <= StoreStateRead7;
       elsif(StoreState = StoreStateRead7) then
         if ( Memory_Ack = '1' ) then
@@ -279,7 +279,7 @@ begin
           Memory_Stb <= '0';
           Memory_We <= '0';
           Address_Internal <= Memory_DatIn;
-          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + x"04");
+          StoreReadAddress <= std_logic_vector(unsigned(StoreReadAddress) + 1);
           StoreState <= StoreStateCompare0;
         end if;
       --
