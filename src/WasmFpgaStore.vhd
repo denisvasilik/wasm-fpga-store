@@ -115,6 +115,9 @@ begin
       Busy <= '0';
       StoreState <= StoreStateIdle0;
     elsif rising_edge(Clk) then
+      -- Avoid implicit latch inference
+      StoreMaxAddress <= MaxAddress;
+      Memory_Sel <= (others => '1');
       if(StoreState = StoreStateIdle0) then
         Busy <= '0';
         Memory_Cyc <= (others => '0');
