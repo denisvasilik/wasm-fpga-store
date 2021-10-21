@@ -30,37 +30,44 @@ setuptools.setup(
     dependency_links=[],
     package_dir={},
     package_data={},
-    data_files=[
-        ("wasm-fpga-store/package", ["package/component.xml"]),
-        ("wasm-fpga-store/package/bd", ["package/bd/bd.tcl"]),
-        ("wasm-fpga-store/package/xgui", ["package/xgui/wasm_fpga_store_v1_0.tcl"]),
-        (
-            "wasm-fpga-store/resources",
-            [
-                "resources/wasm_fpga_store_header.vhd",
-                "resources/wasm_fpga_store_direct.vhd",
-                "resources/wasm_fpga_store_indirect.vhd",
-                "resources/wasm_fpga_store_wishbone.vhd",
-            ],
-        ),
-        (
-            "wasm-fpga-store/ip/WasmFpgaTestBenchRam",
-            ["ip/WasmFpgaTestBenchRam/WasmFpgaTestBenchRam.xci"],
-        ),
-        ("wasm-fpga-store/src", ["src/WasmFpgaStore.vhd"]),
-        (
-            "wasm-fpga-store/tb",
-            [
-                "tb/tb_FileIo.vhd",
-                "tb/tb_pkg_helper.vhd",
-                "tb/tb_pkg.vhd",
-                "tb/tb_std_logic_1164_additions.vhd",
-                "tb/tb_Types.vhd",
-                "tb/tb_WasmFpgaStore.vhd",
-                "tb/tb_WbRam.vhd",
-            ],
-        ),
-        ("wasm-fpga-store", ["CHANGELOG.md", "AUTHORS", "LICENSE"]),
+    data_files=[(
+        "wasm-fpga-store/package", [
+            "package/component.xml"
+        ]),(
+        "wasm-fpga-store/package/bd", [
+            "package/bd/bd.tcl"
+        ]),(
+        "wasm-fpga-store/package/xgui", [
+            "package/xgui/wasm_fpga_store_v1_0.tcl"
+        ]),(
+        "wasm-fpga-store/resources", [
+            "resources/wasm_fpga_store_header.vhd",
+            "resources/wasm_fpga_store_wishbone.vhd",
+        ]),(
+        "wasm-fpga-store/ip/WasmFpgaTestBenchRam", [
+            "ip/WasmFpgaTestBenchRam/WasmFpgaTestBenchRam.xci"
+        ]),(
+        "wasm-fpga-store/src", [
+            "src/WasmFpgaStore.vhd"
+        ]),(
+        "wasm-fpga-store/tb", [
+            "tb/tb_FileIo.vhd",
+            "tb/tb_pkg_helper.vhd",
+            "tb/tb_pkg.vhd",
+            "tb/tb_std_logic_1164_additions.vhd",
+            "tb/tb_Types.vhd",
+            "tb/tb_WasmFpgaStore.vhd",
+            "tb/tb_WbRam.vhd",
+        ]),(
+        'wasm-fpga-store/simstm', [
+            'simstm/Defines.stm',
+            'simstm/WasmFpgaStore.stm',
+        ]),(
+        "wasm-fpga-store", [
+            "CHANGELOG.md",
+            "AUTHORS",
+            "LICENSE"
+        ]),
     ],
     setup_requires=[],
     install_requires=[],
